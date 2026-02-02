@@ -1,0 +1,47 @@
+# Configuración de Spring Boot - Amadeus Backend
+
+spring:
+  application:
+    name: amadeus-backend
+  
+  # Configuración de Base de Datos
+  datasource:
+    url: jdbc:postgresql://localhost:5432/amadeus_db
+    username: postgres
+    password: postgres
+    driver-class-name: org.postgresql.Driver
+  
+  # Configuración JPA/Hibernate
+  jpa:
+    hibernate:
+      ddl-auto: update  # En producción usar 'validate' + migraciones
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+  
+  # Configuración de seguridad (deshabilitada temporalmente para desarrollo)
+  security:
+    user:
+      name: dev
+      password: dev123
+
+# Configuración JWT
+jwt:
+  secret: ${JWT_SECRET:your-256-bit-secret-key-change-this-in-production}
+  expiration: 86400000  # 24 horas en milisegundos
+
+# Configuración del servidor
+server:
+  port: 8080
+  error:
+    include-message: always
+    include-binding-errors: always
+
+# Logging
+logging:
+  level:
+    com.amadeus: DEBUG
+    org.springframework.web: DEBUG
+    org.hibernate.SQL: DEBUG

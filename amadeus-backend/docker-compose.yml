@@ -1,0 +1,41 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:16-alpine
+    container_name: amadeus-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: amadeus_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - amadeus-network
+
+  # pgAdmin (Interfaz gráfica para PostgreSQL) - OPCIONAL
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: amadeus-pgadmin
+    restart: unless-stopped
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@amadeus.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+    ports:
+      - "5050:80"
+    depends_on:
+      - postgres
+    networks:
+      - amadeus-network
+
+volumes:
+  postgres_data:
+    driver: local
+
+networks:
+  amadeus-network:
+    driver: bridge
