@@ -6,10 +6,10 @@ spring:
   
   # Configuración de Base de Datos
   datasource:
-    url: jdbc:postgresql://localhost:5432/amadeus_db
-    username: postgres
-    password: postgres
-    driver-class-name: org.postgresql.Driver
+    url: jdbc:h2:mem:amadeus_db
+    username: sa
+    password: 
+    driver-class-name: org.h2.Driver
   
   # Configuración JPA/Hibernate
   jpa:
@@ -19,7 +19,13 @@ spring:
     properties:
       hibernate:
         format_sql: true
-        dialect: org.hibernate.dialect.PostgreSQLDialect
+        dialect: org.hibernate.dialect.H2Dialect
+  
+  # H2 Console (opcional, para ver la base de datos en el navegador)
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
   
   # Configuración de seguridad (deshabilitada temporalmente para desarrollo)
   security:
