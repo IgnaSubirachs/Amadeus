@@ -1,0 +1,114 @@
+<div class="lesson-layout">
+
+    <header class="lesson-header glass-panel">
+        <div class="header-left">
+            <button class="btn-icon" (click)="goBack()">
+                <i>←</i>
+            </button>
+            <div class="lesson-info" *ngIf="lesson()">
+                <h2>{{ lesson()?.title }}</h2>
+                <span class="topic-badge">{{ lesson()?.musicTheoryTopic }}</span>
+            </div>
+        </div>
+
+        <div class="header-right">
+            <div class="score-display">
+                <span class="star-icon">⭐</span>
+                <span class="score">{{ score() }} pts</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Progress Bar container spanning the top -->
+    <div class="progress-container glass-panel">
+        <div class="progress-bar-bg">
+            <div class="progress-bar-fill" [style.width]="progressPercentage() + '%'"></div>
+        </div>
+        <div class="progress-text">
+            {{ currentExerciseIndex() }} / {{ exercises().length }}
+        </div>
+    </div>
+
+    <main class="lesson-content">
+
+        <div *ngIf="isLoading()" class="loading-state">
+            <div class="spinner"></div>
+            <p>Afinando los instrumentos...</p>
+        </div>
+
+        <!-- The actual interactive container -->
+        <div *ngIf="!isLoading() && !isCompleted() && currentExercise()" class="exercise-card glass-panel fade-in">
+
+            <div class="exercise-header">
+                <span class="exercise-type">{{ currentExercise()?.type }}</span>
+                <span class="exercise-points">+{{ currentExercise()?.points }} pts</span>
+            </div>
+
+            <h3 class="exercise-question">{{ currentExercise()?.question }}</h3>
+
+            <!-- Content Data Interpretation (Can safely assume it's just raw text or small identifiers right now) -->
+            <div class="exercise-media" *ngIf="currentExercise()?.contentData">
+                <div class="music-notation-placeholder">
+                    ♪ {{ currentExercise()?.contentData }} ♪
+                </div>
+            </div>
+
+            <!-- Interactive Options Mode -->
+            <div class="options-grid" *ngIf="getOptions(currentExercise()).length > 0">
+                <button *ngFor="let opt of getOptions(currentExercise())" class="option-btn"
+                    [class.selected]="userAnswer() === opt"
+                    [class.correct]="showResult() && opt === currentExercise()?.correctAnswer"
+                    [class.incorrect]="showResult() && userAnswer() === opt && opt !== currentExercise()?.correctAnswer"
+                    [disabled]="showResult()" (click)="submitAnswer(opt)">
+                    {{ opt }}
+                </button>
+            </div>
+
+            <!-- Text Entry Mode fallback (If there are no options defined) -->
+            <div class="input-mode" *ngIf="getOptions(currentExercise()).length === 0">
+                <input type="text" class="text-answer" placeholder="Escribe tu respuesta..." [ngModel]="userAnswer()"
+                    (ngModelChange)="userAnswer.set($event)" [disabled]="showResult()"
+                    (keyup.enter)="!showResult() && submitAnswer()">
+                <button class="btn-primary" (click)="submitAnswer()" [disabled]="showResult() || !userAnswer()">
+                    Revisar
+                </button>
+            </div>
+
+            <!-- Feedback Box -->
+            <div class="feedback-box slide-up" *ngIf="showResult()" [ngClass]="isCorrect() ? 'success' : 'error'">
+                <div class="feedback-icon">{{ isCorrect() ? '✅' : '❌' }}</div>
+                <div class="feedback-text">
+                    <h4>{{ isCorrect() ? '¡Excelente!' : 'Casi...' }}</h4>
+                    <p *ngIf="!isCorrect()">La respuesta correcta era: <strong>{{ currentExercise()?.correctAnswer
+                            }}</strong></p>
+                </div>
+
+                <button class="btn-primary continue-btn" (click)="nextExercise()">
+                    Continuar
+                </button>
+            </div>
+
+        </div>
+
+        <!-- Completed Screen -->
+        <div *ngIf="isCompleted()" class="completed-card glass-panel fade-in">
+            <div class="celebration-icon">🎉</div>
+            <h2>¡Lección Completada!</h2>
+            <p>Has terminado: <strong>{{ lesson()?.title }}</strong></p>
+
+            <div class="final-stats">
+                <div class="stat-box">
+                    <span class="stat-value">{{ score() }}</span>
+                    <span class="stat-label">Puntos Totales</span>
+                </div>
+                <div class="stat-box">
+                    <span class="stat-value">{{ exercises().length }}</span>
+                    <span class="stat-label">Ejercicios</span>
+                </div>
+            </div>
+
+            <button class="btn-primary" (click)="goBack()">Volver al Inicio</button>
+        </div>
+
+    </main>
+</div>

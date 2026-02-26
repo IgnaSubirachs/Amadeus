@@ -52,17 +52,17 @@ public class UserProgress {
     /**
      * Puntuación total en la lección
      */
-    @Column(name = "total_score")
+    @Column(name = "score")
     @Builder.Default
-    private Integer totalScore = 0;
+    private Integer score = 0;
 
     @PrePersist
     protected void prePersist() {
         if (currentExerciseIndex == null) {
             currentExerciseIndex = 0;
         }
-        if (totalScore == null) {
-            totalScore = 0;
+        if (score == null) {
+            score = 0;
         }
     }
 

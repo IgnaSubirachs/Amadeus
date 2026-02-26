@@ -56,6 +56,12 @@ public class Level {
     @Builder.Default
     private Boolean isLocked = true;
 
+    /**
+     * URL o path de la imagen representativa del nivel
+     */
+    @Column(name = "image_url")
+    private String imageUrl;
+
     @Override
     public boolean equals(Object o) {
         if (this == o)
