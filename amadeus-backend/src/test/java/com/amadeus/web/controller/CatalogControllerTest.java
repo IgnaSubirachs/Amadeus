@@ -1,6 +1,7 @@
 package com.amadeus.web.controller;
 
 import com.amadeus.domain.service.CatalogService;
+import com.amadeus.infrastructure.security.JwtAuthenticationFilter;
 import com.amadeus.web.dto.CourseTreeDTO;
 import com.amadeus.web.dto.LessonTreeDTO;
 import com.amadeus.web.dto.LevelTreeDTO;
@@ -10,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.List;
@@ -29,6 +31,12 @@ class CatalogControllerTest {
 
     @MockBean
     private CatalogService catalogService;
+
+    @MockBean
+    private JwtAuthenticationFilter jwtAuthenticationFilter;
+
+    @MockBean
+    private UserDetailsService userDetailsService;
 
     @Test
     @DisplayName("GET /api/catalog/tree - Should return course tree")

@@ -211,7 +211,7 @@ public class LessonSessionService {
                 .lessonId(lesson.getId())
                 .isUnlocked(isFirstLessonOfLevel)
                 .currentExerciseIndex(0)
-                .totalScore(0)
+                .score(0)
                 .isCompleted(false)
                 .build();
 
@@ -234,7 +234,7 @@ public class LessonSessionService {
                                     .userId(userId)
                                     .lessonId(nextLesson.getId())
                                     .currentExerciseIndex(0)
-                                    .totalScore(0)
+                                    .score(0)
                                     .isCompleted(false)
                                     .build());
 

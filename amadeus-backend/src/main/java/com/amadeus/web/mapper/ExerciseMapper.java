@@ -1,8 +1,11 @@
 package com.amadeus.web.mapper;
 
 import com.amadeus.domain.model.Exercise;
+import com.amadeus.domain.model.ExerciseType;
 import com.amadeus.web.dto.CreateExerciseRequest;
 import com.amadeus.web.dto.ExerciseDTO;
+
+import java.util.Locale;
 
 public class ExerciseMapper {
 
@@ -12,7 +15,7 @@ public class ExerciseMapper {
 
         Exercise exercise = new Exercise();
         exercise.setLessonId(request.lessonId());
-        exercise.setType(request.type());
+        exercise.setType(ExerciseType.valueOf(request.type().trim().toUpperCase(Locale.ROOT)));
         exercise.setDifficulty(request.difficulty());
         exercise.setOrderNumber(request.orderNumber());
         exercise.setQuestionData(request.questionData());
@@ -29,7 +32,7 @@ public class ExerciseMapper {
         return new ExerciseDTO(
                 exercise.getId(),
                 exercise.getLessonId(),
-                exercise.getType(),
+                exercise.getType().name(),
                 exercise.getDifficulty(),
                 exercise.getOrderNumber(),
                 exercise.getQuestionData(),

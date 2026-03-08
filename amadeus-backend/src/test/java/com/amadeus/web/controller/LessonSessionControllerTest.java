@@ -2,6 +2,7 @@ package com.amadeus.web.controller;
 
 import com.amadeus.domain.model.ExerciseType;
 import com.amadeus.domain.service.LessonSessionService;
+import com.amadeus.infrastructure.security.JwtAuthenticationFilter;
 import com.amadeus.web.dto.ExerciseResultRequest;
 import com.amadeus.web.dto.ExerciseViewDTO;
 import com.amadeus.web.dto.LessonSessionDTO;
@@ -14,6 +15,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.LocalDateTime;
@@ -40,6 +42,12 @@ class LessonSessionControllerTest {
 
     @MockBean
     private LessonSessionService lessonSessionService;
+
+    @MockBean
+    private JwtAuthenticationFilter jwtAuthenticationFilter;
+
+    @MockBean
+    private UserDetailsService userDetailsService;
 
     @Test
     @DisplayName("POST /api/users/{userId}/lessons/{lessonId}/start - Should return lesson session")
