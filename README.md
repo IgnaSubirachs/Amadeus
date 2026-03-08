@@ -1,88 +1,71 @@
-# 🎵 Amadeus Backend - Music Theory Learning API
+# Amadeus
 
-Backend API REST para la aplicación de aprendizaje de solfeo y teoría musical Amadeus.
+Aplicació per aprendre música amb una estètica retro inspirada en Mozart, sessions curtes tipus joc i una mascota guia: **Wolfi Amadeus**.
 
-## 🏗️ Arquitectura
+![Wolfi Amadeus](docs/wolfi.svg)
 
-**Patrón:** Arquitectura Hexagonal (Ports & Adapters)
-**Principios:** SOLID, TDD, Clean Code
+## Què hi ha ara
 
-### Estructura de Carpetas
+- Backend Spring Boot amb model de progrés per usuari, lliçons, exercicis i puntuació.
+- Frontend estàtic integrat dins del backend amb una interfície retro i navegació de lliçons.
+- Contingut demo carregat automàticament quan la base de dades està buida.
+- Wolfi, un guia bitmap estil anys 80 que acompanya l'usuari durant la sessió.
 
-```
-src/main/java/com/amadeus/
-├── domain/              # Núcleo del negocio (independiente de frameworks)
-│   ├── model/          # Entidades (User, Level, Lesson, Exercise, etc.)
-│   ├── repository/     # Interfaces de repositorio (puertos)
-│   └── service/        # Servicios de dominio (lógica de negocio)
-├── application/         # Casos de uso
-│   └── usecase/        # Implementación de casos de uso
-├── infrastructure/      # Detalles técnicos (adaptadores)
-│   ├── persistence/    # Implementación JPA de repositorios
-│   ├── security/       # Configuración de seguridad y JWT
-│   └── config/         # Configuración de Spring
-└── web/                # Capa de presentación
-    ├── controller/     # Controllers REST
-    └── dto/           # Data Transfer Objects
-```
+## Experiència actual
 
-## 🚀 Tecnologías
+- Catàleg de nivell i lliçó demo.
+- Sessió interactiva amb exercicis de nota i ritme.
+- Correcció server-side de respostes.
+- Marcador de progrés i feedback visual.
 
-- **Java 17**
-- **Spring Boot 3.2.2**
-- **Spring Data JPA**
-- **Spring Security + JWT**
-- **PostgreSQL**
-- **Maven**
-- **JUnit 5 + Mockito** (TDD)
-- **Lombok**
+## Stack
 
-## 📦 Requisitos Previos
+- Java 17
+- Spring Boot 3.2.2
+- Spring Data JPA
+- Spring Security
+- PostgreSQL
+- Maven
+- JUnit 5 + Mockito
 
-- Java 17+
-- Maven 3.8+
-- PostgreSQL 14+
+## Executar el projecte
 
-## 🔧 Configuración
+1. Crea la base de dades PostgreSQL:
 
-1. **Crear base de datos PostgreSQL:**
 ```sql
 CREATE DATABASE amadeus_db;
 ```
 
-2. **Configurar credenciales:**
-Editar `src/main/resources/application.yml` con tus credenciales de PostgreSQL.
+2. Revisa credencials a `amadeus-backend/src/main/resources/application.yml`.
+3. Entra a `amadeus-backend` i arrenca:
 
-3. **Compilar proyecto:**
-```bash
-mvn clean install
-```
-
-4. **Ejecutar aplicación:**
 ```bash
 mvn spring-boot:run
 ```
 
-La API estará disponible en: `http://localhost:8080`
+4. Obre [http://localhost:8080](http://localhost:8080).
 
-## 🧪 Testing (TDD)
+## Tests
 
-Ejecutar todos los tests:
+Des de `amadeus-backend`:
+
 ```bash
 mvn test
 ```
 
-Los tests usan base de datos H2 en memoria (configuración en `application-test.yml`).
+## Demo inclosa
 
-## 📚 Próximos Pasos
+Quan la base està buida, es creen automàticament:
 
-- [ ] Implementar entidades del dominio
-- [ ] Crear tests unitarios (TDD)
-- [ ] Implementar servicios
-- [ ] Crear controllers REST
-- [ ] Configurar Spring Security + JWT
-- [ ] Documentar API con Swagger/OpenAPI
+- `level-notes-1`
+- `lesson-notes-1`
+- `exercise-note-1`
+- `exercise-note-2`
+- `exercise-rhythm-1`
 
-## 📄 Licencia
+## Properes millores naturals
 
-Proyecto educativo - 2026
+- Més emocions i animacions per a Wolfi.
+- Més lliçons i branques d'aprenentatge.
+- Autenticació real i persistència de perfil.
+- Vista de mapa de curs més completa.

@@ -2,16 +2,17 @@ package com.amadeus.domain.model;
 
 import jakarta.persistence.*;
 import lombok.*;
+
 import java.time.LocalDateTime;
 import java.util.Objects;
 
 /**
- * Entidad UserProgress - Rastrea el progreso del usuario en cada lección
- * 
- * Relación: Un User tiene múltiples UserProgress (uno por lección)
+ * Entidad UserProgress - Rastrea el progreso del usuario en cada leccion.
  */
 @Entity
-@Table(name = "user_progress")
+@Table(name = "user_progress", uniqueConstraints = {
+        @UniqueConstraint(name = "uk_user_progress_user_lesson", columnNames = { "user_id", "lesson_id" })
+})
 @Data
 @Builder
 @NoArgsConstructor
@@ -28,30 +29,21 @@ public class UserProgress {
     @Column(nullable = false, name = "lesson_id")
     private String lessonId;
 
-    /**
-     * Si la lección está completada
-     */
     @Column(nullable = false, name = "is_completed")
     @Builder.Default
     private Boolean isCompleted = false;
 
-    /**
-     * Índice del ejercicio actual (si no ha completado)
-     * Permite retomar donde dejó
-     */
     @Column(name = "current_exercise_index")
     @Builder.Default
     private Integer currentExerciseIndex = 0;
 
-    /**
-     * Fecha de completado (null si no ha terminado)
-     */
     @Column(name = "completed_at")
     private LocalDateTime completedAt;
 
-    /**
-     * Puntuación total en la lección
-     */
+    @Column(nullable = false, name = "is_unlocked")
+    @Builder.Default
+    private Boolean isUnlocked = false;
+
     @Column(name = "total_score")
     @Builder.Default
     private Integer totalScore = 0;
@@ -64,14 +56,19 @@ public class UserProgress {
         if (totalScore == null) {
             totalScore = 0;
         }
+        if (isUnlocked == null) {
+            isUnlocked = false;
+        }
     }
 
     @Override
     public boolean equals(Object o) {
-        if (this == o)
+        if (this == o) {
             return true;
-        if (o == null || getClass() != o.getClass())
+        }
+        if (o == null || getClass() != o.getClass()) {
             return false;
+        }
         UserProgress that = (UserProgress) o;
         return Objects.equals(id, that.id);
     }

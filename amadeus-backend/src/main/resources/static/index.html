@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Amadeus</title>
+    <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+    <div class="noise"></div>
+    <main class="app-shell">
+        <section class="hero-panel">
+            <div class="brand-lockup">
+                <p class="eyebrow">Amadeus.exe</p>
+                <h1>Aprendre musica amb un fantasma de conservatori dels 80.</h1>
+                <p class="lead">Una app retro per estudiar notes, ritmes i teoria amb sessions curtes, puntuacio i una mascota que no et deixa badar.</p>
+            </div>
+
+            <div class="guide-card">
+                <div class="pixel-stage">
+                    <canvas id="amadeus-guide" width="160" height="160" aria-label="Mascota retro d'Amadeus"></canvas>
+                </div>
+                <div class="guide-copy">
+                    <p class="guide-name">Wolfi Amadeus</p>
+                    <p id="guide-line">Benvingut. Comencem per una lliço curta i fem sonar el pentagrama.</p>
+                </div>
+            </div>
+
+            <div class="status-grid">
+                <article>
+                    <span class="status-label">Mode</span>
+                    <strong>Arcade tutor</strong>
+                </article>
+                <article>
+                    <span class="status-label">Usuari local</span>
+                    <strong id="user-id"></strong>
+                </article>
+                <article>
+                    <span class="status-label">Tema</span>
+                    <strong>Neo-baroque pixel</strong>
+                </article>
+            </div>
+        </section>
+
+        <section class="content-grid">
+            <section class="panel catalog-panel">
+                <div class="panel-head">
+                    <p class="panel-kicker">Cataleg</p>
+                    <h2>Camí d'estudi</h2>
+                </div>
+                <div id="catalog" class="catalog-list"></div>
+            </section>
+
+            <section class="panel lesson-panel">
+                <div class="panel-head">
+                    <p class="panel-kicker">Sessio</p>
+                    <h2 id="lesson-title">Selecciona una lliço</h2>
+                </div>
+                <div id="lesson-meta" class="lesson-meta">Encara no hi ha cap lliço carregada.</div>
+                <div id="exercise-area" class="exercise-area empty-state">
+                    <p>Tria una lliço de la columna esquerra per començar.</p>
+                </div>
+            </section>
+
+            <section class="panel score-panel">
+                <div class="panel-head">
+                    <p class="panel-kicker">Progress</p>
+                    <h2>Marcador</h2>
+                </div>
+                <div id="scoreboard" class="scoreboard">
+                    <div>
+                        <span class="metric-label">Punts</span>
+                        <strong id="score-value">0</strong>
+                    </div>
+                    <div>
+                        <span class="metric-label">Exercici</span>
+                        <strong id="exercise-value">0 / 0</strong>
+                    </div>
+                    <div>
+                        <span class="metric-label">Estat</span>
+                        <strong id="completion-value">En espera</strong>
+                    </div>
+                </div>
+                <div id="feedback" class="feedback-card">Cap resposta enviada encara.</div>
+            </section>
+        </section>
+    </main>
+
+    <script src="/app.js"></script>
+</body>
+</html>
