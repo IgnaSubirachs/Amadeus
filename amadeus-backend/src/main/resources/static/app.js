@@ -10,10 +10,10 @@ localStorage.setItem("amadeusUserId", state.userId);
 document.getElementById("user-id").textContent = state.userId;
 
 const guideLines = {
-  idle: "Benvingut. Comencem per una lliço curta i fem sonar el pentagrama.",
+  idle: "Benvingut. Comencem per una llico curta i fem sonar el pentagrama.",
   loading: "Obrint el llibre de partitures...",
   started: "Perfecte. Escolta la pregunta, mira el pentagrama i respon sense por.",
-  correct: "Això si que desafina poc. Seguim.",
+  correct: "Aixo si que desafina poc. Seguim.",
   wrong: "No passa res. Torna-hi: la teoria entra millor amb ritme.",
   complete: "Bravo. Has acabat la sessio demo d'Amadeus."
 };
@@ -25,56 +25,85 @@ function setGuideLine(key) {
 function drawGuide() {
   const canvas = document.getElementById("amadeus-guide");
   const ctx = canvas.getContext("2d");
-  const scale = 10;
+  const scale = 8;
   const palette = {
     T: "transparent",
-    B: "#0b1222",
-    W: "#f6efdb",
-    G: "#f4d8a7",
-    O: "#ffb347",
-    C: "#72e2c3",
-    R: "#a44d34"
+    K: "#040608",
+    H: "#2b130b",
+    S: "#f3a15d",
+    L: "#ffd19a",
+    N: "#d67339",
+    E: "#f7f2df",
+    D: "#061a4c",
+    M: "#7cc7d8",
+    G: "#ffc51f",
+    R: "#b2261d",
+    C: "#6e2417"
   };
 
-  const frameA = [
-    "TTTTTWWWWWWTTTT",
-    "TTTTWWWWWWWWTTT",
-    "TTTWWWWWWWWWWTT",
-    "TTWWBBBBBBBBWWT",
-    "TTWBBBBBBBBBBW T".replace(/ /g, ""),
-    "TWWBGGGGGGGGBWW",
-    "TWBWGGGBBGGWBWT",
-    "TWBWGGGGGGGWBWT",
-    "TWBWGBWWWWGBBWT",
-    "TWWBGGGGGGGGBWT",
-    "TTWBGGOOOGGGBWT",
-    "TTWWGGGGGGGWWTT",
-    "TTTWRRRRRRRWTTT",
-    "TTTWCRRCCRWTTTT",
-    "TTTWBCCCCBWTTTT",
-    "TTTTWBBBBWTTTTT"
+  const portraitA = [
+    "TTTTTTTTTTTTHHHHHHTTTTTT",
+    "TTTTTTTTTHHHHHHHHHHTTTTT",
+    "TTTTTTTHHHHHHHHHHHHHTTTT",
+    "TTTTTTHHHHHHHKHHHHHHHHTTT",
+    "TTTTTHHHHHHHHHHHHHHHHHHTT",
+    "TTTTTHHHHSSSSSSSSSHHHHHTT",
+    "TTTTTHHSSSSSSSSSSSSHHHHTT",
+    "TTTTTHSSSSSSSSSSSSSSHHHTT",
+    "TTTTTHSSSSNSSSSNSSSSHHHTT",
+    "TTTTTHSSSSSSSSSSSSSSHHHTT",
+    "TTTTTHSSEEKKSSEEKKSHHHTT",
+    "TTTTTHSSEEEKKSSEEEKSHHTT",
+    "TTTTTHSSSSSSNSSSSSSSHHTT",
+    "TTTTTHSSSSSSNSSSSSSSHHTT",
+    "TTTTTHSSSSNNNNNNSSSSHTTT",
+    "TTTTTTHSSNNNSSNNNSSHTTTT",
+    "TTTTTTHSSNNNNNNNNSSHTTTT",
+    "TTTTTTHHSSSCCCCSSSHHTTTT",
+    "TTTTTTTHSSCCHHCCSSHTTTTT",
+    "TTTTTTTHHSCCHHCCSHHTTTTT",
+    "TTTTTTTHHHDGGGGDHHHTTTTT",
+    "TTTTTTTDDDDGGGGDDDDTTTTT",
+    "TTTTTTDDDDDGGGGDDDDDTTTT",
+    "TTTTTTRRRGDDGGDDGRRRTTTT",
+    "TTTTRRRRGGDDDDDDGGRRRRTT",
+    "TTTTRRDDDGGGGGGGGDDRRRTT",
+    "TTTTDDDDDDDKKDDDDDDDDTTT",
+    "TTTDDDDDDDDKKDDDDDDDDTTT"
   ];
 
-  const frameB = [
-    "TTTTTWWWWWWTTTT",
-    "TTTTWWWWWWWWTTT",
-    "TTTWWWWWWWWWWTT",
-    "TTWWBBBBBBBBWWT",
-    "TTWBBBBBBBBBBWT",
-    "TWWBGGGGGGGGBWW",
-    "TWBWGGBTTBGWBWT",
-    "TWBWGGGGGGGWBWT",
-    "TWBWGBWWWWGBBWT",
-    "TWWBGGGGGGGGBWT",
-    "TTWBGGOOOGGGBWT",
-    "TTWWGGGGGGGWWTT",
-    "TTTWRRRRRRRWTTT",
-    "TTTWCRRCCRWTTTT",
-    "TTTWBCCCCBWTTTT",
-    "TTTTWBBBBWTTTTT"
+  const portraitB = [
+    "TTTTTTTTTTTTHHHHHHTTTTTT",
+    "TTTTTTTTTHHHHHHHHHHTTTTT",
+    "TTTTTTTHHHHHHHHHHHHHTTTT",
+    "TTTTTTHHHHHHHKHHHHHHHHTTT",
+    "TTTTTHHHHHHHHHHHHHHHHHHTT",
+    "TTTTTHHHHSSSSSSSSSHHHHHTT",
+    "TTTTTHHSSSSSSSSSSSSHHHHTT",
+    "TTTTTHSSSSSSSSSSSSSSHHHTT",
+    "TTTTTHSSSSNSSSSNSSSSHHHTT",
+    "TTTTTHSSSSSSSSSSSSSSHHHTT",
+    "TTTTTHSSKKKKSSKKKKSHHHTT",
+    "TTTTTHSSEEEEKSSEEEESHHTT",
+    "TTTTTHSSSSSSNSSSSSSSHHTT",
+    "TTTTTHSSSSSSNSSSSSSSHHTT",
+    "TTTTTHSSSSNNNNNNSSSSHTTT",
+    "TTTTTTHSSNNNSSNNNSSHTTTT",
+    "TTTTTTHSSNNNNNNNNSSHTTTT",
+    "TTTTTTHHSSSCCCCSSSHHTTTT",
+    "TTTTTTTHSSCCHHCCSSHTTTTT",
+    "TTTTTTTHHSCCHHCCSHHTTTTT",
+    "TTTTTTTHHHDGGGGDHHHTTTTT",
+    "TTTTTTTDDDDGGGGDDDDTTTTT",
+    "TTTTTTDDDDDGGGGDDDDDTTTT",
+    "TTTTTTRRRGDDGGDDGRRRTTTT",
+    "TTTTRRRRGGDDDDDDGGRRRRTT",
+    "TTTTRRDDDGGGGGGGGDDRRRTT",
+    "TTTTDDDDDDDKKDDDDDDDDTTT",
+    "TTTDDDDDDDDKKDDDDDDDDTTT"
   ];
 
-  const frames = [frameA, frameB];
+  const frames = [portraitA, portraitB];
   let index = 0;
 
   const render = () => {
@@ -82,7 +111,9 @@ function drawGuide() {
     frames[index].forEach((row, y) => {
       row.split("").forEach((pixel, x) => {
         const color = palette[pixel];
-        if (!color || color === "transparent") return;
+        if (!color || color === "transparent") {
+          return;
+        }
         ctx.fillStyle = color;
         ctx.fillRect(x * scale, y * scale, scale, scale);
       });
@@ -93,7 +124,7 @@ function drawGuide() {
   setInterval(() => {
     index = (index + 1) % frames.length;
     render();
-  }, 700);
+  }, 900);
 }
 
 async function fetchJSON(url, options) {
@@ -122,7 +153,7 @@ function renderCatalog() {
           <h4>${lesson.orderNumber}. ${lesson.title}</h4>
           <p>${lesson.description || "Sessio curta"}</p>
           <p>${lesson.exerciseCount} exercicis · ${lesson.estimatedMinutes || 5} min</p>
-          <button class="lesson-button" data-lesson-id="${lesson.id}">Comencar lliço</button>
+          <button class="lesson-button" data-lesson-id="${lesson.id}">Comencar llico</button>
         </div>
       `).join("")}
     </article>
