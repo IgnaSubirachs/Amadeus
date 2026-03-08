@@ -48,6 +48,12 @@ public class Lesson {
     private String description;
 
     /**
+     * Contenido completo de la lección (texto/html/markdown según front-end)
+     */
+    @Column(columnDefinition = "TEXT")
+    private String content;
+
+    /**
      * Tema musical específico
      * Ejemplos: "clefs", "notes", "rhythms", "intervals"
      */

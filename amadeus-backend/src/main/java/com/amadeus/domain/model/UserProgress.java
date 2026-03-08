@@ -44,17 +44,25 @@ public class UserProgress {
     @Builder.Default
     private Boolean isUnlocked = false;
 
-    @Column(name = "total_score")
+    @Column(name = "score")
     @Builder.Default
-    private Integer totalScore = 0;
+    private Integer score = 0;
+
+    public Integer getTotalScore() {
+        return score;
+    }
+
+    public void setTotalScore(Integer totalScore) {
+        this.score = totalScore;
+    }
 
     @PrePersist
     protected void prePersist() {
         if (currentExerciseIndex == null) {
             currentExerciseIndex = 0;
         }
-        if (totalScore == null) {
-            totalScore = 0;
+        if (score == null) {
+            score = 0;
         }
         if (isUnlocked == null) {
             isUnlocked = false;

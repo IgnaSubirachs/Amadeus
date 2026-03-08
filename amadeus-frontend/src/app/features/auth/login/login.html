@@ -1,0 +1,53 @@
+<div class="auth-container">
+  <div class="auth-card glass-panel">
+    <div class="brand">
+      <div class="logo">♪</div>
+      <h1>Amadeus</h1>
+      <p>Aprende música jugando</p>
+    </div>
+
+    <!-- Mensaje de error (si existe) -> se renderiza reactivamente con Signal -->
+    <div class="error-alert" *ngIf="errorMessage()">
+      {{ errorMessage() }}
+    </div>
+
+    <form (ngSubmit)="onSubmit()" #loginForm="ngForm">
+      <div class="form-group">
+        <label for="email">Correo Electrónico</label>
+        <div class="input-wrapper">
+          <i class="icon-mail">✉</i>
+          <input 
+            type="email" 
+            id="email" 
+            name="email"
+            [ngModel]="email()"
+            (ngModelChange)="email.set($event)"
+            required>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="password">Contraseña</label>
+        <div class="input-wrapper">
+          <i class="icon-lock">🔒</i>
+          <input 
+            type="password" 
+            id="password" 
+            name="password"
+            [ngModel]="password()"
+            (ngModelChange)="password.set($event)"
+            required>
+        </div>
+      </div>
+
+      <button type="submit" class="btn-primary auth-submit" [disabled]="isLoading()">
+        <span *ngIf="!isLoading()">Entrar a Amadeus</span>
+        <span *ngIf="isLoading()" class="spinner"></span>
+      </button>
+    </form>
+
+    <div class="auth-footer">
+      <p>¿No tienes cuenta? <a routerLink="/register">Regístrate gratis</a></p>
+    </div>
+  </div>
+</div>

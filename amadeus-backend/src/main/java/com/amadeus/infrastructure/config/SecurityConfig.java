@@ -1,61 +1,62 @@
 package com.amadeus.infrastructure.config;
 
+import com.amadeus.infrastructure.security.JwtAuthenticationFilter;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-/**
- * Configuración de Seguridad
- * 
- * @Configuration - Marca como clase de configuración Spring
- * @EnableWebSecurity - Activa configuración de seguridad web
- * 
- *                    ¿Por qué BCrypt?
- *                    - Algoritmo de hashing seguro y lento (resistente a fuerza
- *                    bruta)
- *                    - Salt automático (cada hash es único)
- *                    - Configuración de "strength" (complejidad)
- * 
- *                    Strength 10 = 2^10 = 1024 iteraciones (balance
- *                    seguridad/rendimiento)
- */
 @Configuration
 @EnableWebSecurity
+@RequiredArgsConstructor
 public class SecurityConfig {
 
-    /**
-     * Bean de PasswordEncoder para hashear passwords
-     * 
-     * Se inyecta automáticamente donde se necesite
-     * Ejemplo de uso: passwordEncoder.encode("plainPassword")
-     * 
-     * @return BCryptPasswordEncoder con strength 10
-     */
+    private final JwtAuthenticationFilter jwtAuthFilter;
+    private final UserDetailsService userDetailsService;
+
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder(10);
     }
 
-    /**
-     * Configuración de seguridad HTTP
-     * 
-     * TEMPORAL: Deshabilitamos seguridad para poder probar endpoints
-     * TODO: Implementar JWT authentication
-     * 
-     * @param http HttpSecurity builder
-     * @return SecurityFilterChain configurado
-     */
+    @Bean
+    public AuthenticationProvider authenticationProvider() {
+        DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
+        authProvider.setUserDetailsService(userDetailsService);
+        authProvider.setPasswordEncoder(passwordEncoder());
+        return authProvider;
+    }
+
+    @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
+        return config.getAuthenticationManager();
+    }
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(csrf -> csrf.disable()) // Deshabilitar CSRF para API REST
                 .authorizeHttpRequests(auth -> auth
-                        .anyRequest().permitAll() // Permitir todas las peticiones (TEMPORAL)
-                );
+                        .requestMatchers("/api/auth/**", "/swagger-ui/**", "/v3/api-docs/**", "/swagger-resources/**",
+                                "/webjars/**")
+                        .permitAll() // Permitir Auth y Swagger
+                        .anyRequest().authenticated() // Rutas protegidas
+                )
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // Sin
+                                                                                                              // estado
+                .authenticationProvider(authenticationProvider())
+                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }

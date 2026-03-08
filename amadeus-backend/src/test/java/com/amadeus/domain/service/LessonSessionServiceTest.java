@@ -79,7 +79,7 @@ class LessonSessionServiceTest {
                 .lessonId("lesson-1")
                 .isUnlocked(true)
                 .currentExerciseIndex(0)
-                .totalScore(0)
+                .score(0)
                 .isCompleted(false)
                 .build();
     }

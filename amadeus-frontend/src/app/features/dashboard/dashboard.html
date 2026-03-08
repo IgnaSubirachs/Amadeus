@@ -1,0 +1,75 @@
+<div class="dashboard-layout">
+    <!-- Navigation Header -->
+    <header class="top-nav glass-panel">
+        <div class="nav-brand">
+            <span class="logo">♪</span>
+            <span>Amadeus</span>
+        </div>
+
+        <div class="user-controls">
+            <div class="user-badge">
+                <div class="avatar">
+                    {{ username().charAt(0).toUpperCase() }}
+                </div>
+                <span class="username">{{ username() }}</span>
+            </div>
+            <button class="btn-logout" (click)="logout()">
+                <i>Salir</i>
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="dashboard-content">
+        <section class="welcome-section">
+            <h1>Hola, {{ username() }} 👋</h1>
+            <p>Continúa tu camino musical. ¡Vamos a aprender!</p>
+        </section>
+
+        <!-- Loading State -->
+        <div *ngIf="isLoading()" class="loading-state">
+            <div class="spinner"></div>
+            <p>Cargando partituras y niveles...</p>
+        </div>
+
+        <!-- Error State -->
+        <div *ngIf="error()" class="error-alert">
+            {{ error() }}
+            <button (click)="loadLevels()">Reintentar</button>
+        </div>
+
+        <!-- Levels Grid -->
+        <div class="levels-grid" *ngIf="!isLoading() && !error()">
+            <div *ngFor="let level of levels(); let i = index" class="level-card glass-panel"
+                [class.locked]="level.isLocked">
+                <div class="level-header">
+                    <span class="level-number">Nivel {{ level.orderNumber }}</span>
+                    <span class="difficulty-badge" [attr.data-diff]="level.difficulty.toLowerCase()">
+                        {{ level.difficulty }}
+                    </span>
+                </div>
+
+                <div class="level-body">
+                    <h3>{{ level.name }}</h3>
+                    <p>{{ level.description }}</p>
+                </div>
+
+                <div class="level-footer">
+                    <button *ngIf="!level.isLocked" class="btn-primary start-btn" [routerLink]="['/levels', level.id]">
+                        Aprender
+                    </button>
+
+                    <div *ngIf="level.isLocked" class="locked-overlay">
+                        <span class="lock-icon">🔒</span>
+                        <span>Bloqueado</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Placeholder if no levels exist yet -->
+            <div *ngIf="levels().length === 0" class="empty-state">
+                <p>Aún no hay niveles disponibles. ¡Revisa más tarde!</p>
+            </div>
+        </div>
+    </main>
+</div>

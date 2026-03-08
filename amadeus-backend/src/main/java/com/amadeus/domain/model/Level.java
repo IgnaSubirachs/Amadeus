@@ -7,8 +7,6 @@ import java.util.Objects;
 
 /**
  * Entidad Level - Representa un nivel de dificultad en la app.
- *
- * Organiza las lecciones de forma progresiva.
  */
 @Entity
 @Table(name = "levels")
@@ -33,6 +31,9 @@ public class Level {
 
     @Column(nullable = false, length = 20)
     private String difficulty;
+
+    @Column(name = "image_url")
+    private String imageUrl;
 
     @Override
     public boolean equals(Object o) {
