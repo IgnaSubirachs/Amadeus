@@ -14,6 +14,7 @@ public class LevelMapper {
         level.setName(request.name());
         level.setDescription(request.description());
         level.setOrderNumber(request.orderNumber());
+        level.setDifficulty(request.difficulty() != null ? request.difficulty() : "beginner");
         level.setImageUrl(request.imageUrl());
 
         return level;
@@ -28,6 +29,7 @@ public class LevelMapper {
                 level.getName(),
                 level.getDescription(),
                 level.getOrderNumber(),
+                level.getDifficulty(),
                 level.getImageUrl());
     }
 }

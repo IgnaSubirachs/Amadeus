@@ -20,7 +20,7 @@ Aplicació per aprendre música amb una estètica retro inspirada en Mozart, ses
 
 ## Stack
 
-- Java 17
+- Java 26
 - Spring Boot 3.2.2
 - Spring Data JPA
 - Spring Security

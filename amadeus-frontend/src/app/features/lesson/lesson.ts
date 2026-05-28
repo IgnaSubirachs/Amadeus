@@ -1,14 +1,28 @@
-import { Component, OnInit, signal, computed } from '@angular/core';
+import { Component, OnInit, computed, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { LessonService, LessonDTO, ExerciseDTO } from '../../core/services/lesson.service';
-import { UserProgressService, UserProgressDTO } from '../../core/services/user-progress.service';
+import { ActivatedRoute, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
+import { LessonService, LessonDTO, ExerciseDTO } from '../../core/services/lesson.service';
+import { UserProgressService } from '../../core/services/user-progress.service';
+
+interface QuestionData {
+  question?: string;
+  options?: string[];
+  staff?: 'treble' | 'bass';
+  highlightedNote?: string;
+  pattern?: string[];
+  hint?: string;
+}
+
+interface CorrectAnswerData {
+  answer?: string;
+  answers?: string[];
+}
 
 @Component({
   selector: 'app-lesson',
   standalone: true,
-  imports: [CommonModule, RouterLink, FormsModule],
+  imports: [CommonModule, FormsModule],
   templateUrl: './lesson.html',
   styleUrls: ['./lesson.scss']
 })
@@ -16,21 +30,18 @@ export class Lesson implements OnInit {
   lesson = signal<LessonDTO | null>(null);
   exercises = signal<ExerciseDTO[]>([]);
 
-  // State
   isLoading = signal(true);
   currentExerciseIndex = signal(0);
   score = signal(0);
   error = signal('');
 
-  // Interactive Exercise State
   userAnswer = signal<string>('');
   showResult = signal(false);
   isCorrect = signal(false);
 
-  // Computed Values
   currentExercise = computed(() => {
     const list = this.exercises();
-    if (list.length === 0) return null;
+    if (list.length === 0 || this.currentExerciseIndex() >= list.length) return null;
     return list[this.currentExerciseIndex()];
   });
 
@@ -63,85 +74,162 @@ export class Lesson implements OnInit {
 
   loadLessonData(lessonId: string) {
     this.isLoading.set(true);
+    this.error.set('');
 
-    // 1. Fetch Lesson Data
     this.lessonService.getLessonById(lessonId).subscribe({
       next: (lessonData: LessonDTO) => {
         this.lesson.set(lessonData);
-
-        // 2. Fetch Exercises for the lesson
         this.lessonService.getLessonExercises(lessonId).subscribe({
-          next: (exs: ExerciseDTO[]) => {
-            exs.sort((a: ExerciseDTO, b: ExerciseDTO) => a.orderNumber - b.orderNumber);
-            this.exercises.set(exs);
-
-            // 3. Load Progress (Resuming learning)
+          next: (exercises: ExerciseDTO[]) => {
+            this.exercises.set([...exercises].sort((a, b) => a.orderNumber - b.orderNumber));
             this.loadUserProgress(lessonId);
           },
-          error: (err: any) => this.handleError('Error cargando ejercicios')
+          error: () => this.handleError("No s'han pogut carregar els exercicis")
         });
       },
-      error: (err: any) => this.handleError('Error cargando la lección')
+      error: () => this.handleError("No s'ha pogut carregar la llico")
     });
   }
 
   loadUserProgress(lessonId: string) {
     this.progressService.getUserProgressForLesson(lessonId).subscribe({
-      next: (progress: any) => {
+      next: progress => {
         if (progress && !progress.isCompleted) {
-          // Resume from where the user left off
-          this.currentExerciseIndex.set(progress.currentExerciseIndex);
-          this.score.set(progress.score);
-        } else if (progress && progress.isCompleted) {
-          // Already completed, just view the summary
+          this.currentExerciseIndex.set(progress.currentExerciseIndex ?? 0);
+          this.score.set(progress.score ?? 0);
+        } else if (progress?.isCompleted) {
           this.currentExerciseIndex.set(this.exercises().length);
-          this.score.set(progress.score);
+          this.score.set(progress.score ?? 0);
         }
         this.isLoading.set(false);
       },
-      error: (err: any) => {
-        // If 404, it means it's a new attempt. Just ignore the 404 error
+      error: err => {
         if (err.status !== 404) {
-          console.error('Error cargando progreso:', err);
+          console.error('Error carregant progres:', err);
         }
         this.isLoading.set(false);
       }
     });
   }
 
-  // Parses the stringified options array returned from the backend (if the question has options)
-  getOptions(exercise: ExerciseDTO | null): any[] {
-    if (!exercise || !exercise.optionsData) return [];
-    try {
-      return JSON.parse(exercise.optionsData);
-    } catch {
-      return [];
-    }
+  questionData(exercise: ExerciseDTO | null): QuestionData {
+    return this.parseJson<QuestionData>(exercise?.questionData, {});
+  }
+
+  correctAnswerText(exercise: ExerciseDTO | null): string {
+    const answer = this.parseJson<CorrectAnswerData>(exercise?.correctAnswer, {});
+    return answer.answer ?? answer.answers?.join(' ') ?? '';
+  }
+
+  getOptions(exercise: ExerciseDTO | null): string[] {
+    return this.questionData(exercise).options ?? [];
+  }
+
+  rhythmPattern(exercise: ExerciseDTO | null): string[] {
+    return this.questionData(exercise).pattern ?? [];
+  }
+
+  staffNote(exercise: ExerciseDTO | null): string {
+    return this.questionData(exercise).highlightedNote ?? '';
+  }
+
+  noteTopPercent(note: string): number {
+    const positions: Record<string, number> = {
+      E4: 80,
+      F4: 70,
+      G4: 60,
+      A4: 50,
+      B4: 40,
+      C5: 30,
+      D5: 20,
+      C4: 90,
+      D4: 86
+    };
+    return positions[note.toUpperCase()] ?? 50;
   }
 
   submitAnswer(selectedAnswer?: string) {
-    if (this.showResult()) return; // Already answered
+    if (this.showResult()) return;
 
     const exercise = this.currentExercise();
     if (!exercise) return;
 
     const finalAnswer = selectedAnswer !== undefined ? selectedAnswer : this.userAnswer();
+    const correct = this.isAnswerCorrect(finalAnswer, exercise);
 
-    // Check answer natively considering the JSON shape might be slightly different in format, lowercasing both checks
-    const correct = finalAnswer.trim().toLowerCase() === exercise.correctAnswer.trim().toLowerCase();
-
+    this.userAnswer.set(finalAnswer);
     this.isCorrect.set(correct);
     this.showResult.set(true);
 
     if (correct) {
-      this.score.update(s => s + exercise.points);
+      this.score.update(score => score + exercise.maxPoints);
     }
   }
 
   nextExercise() {
-    this.currentExerciseIndex.update(i => i + 1);
+    this.currentExerciseIndex.update(index => index + 1);
     this.resetExerciseState();
     this.saveProgress();
+  }
+
+  saveProgress() {
+    const lessonId = this.lesson()?.id;
+    if (!lessonId) return;
+
+    this.progressService.recordProgress(lessonId, {
+      isCompleted: this.isCompleted(),
+      currentExerciseIndex: this.currentExerciseIndex(),
+      score: this.score()
+    }).subscribe({
+      error: err => console.error('Error guardant progres:', err)
+    });
+  }
+
+  goBack() {
+    this.router.navigate(['/dashboard']);
+  }
+
+  private isAnswerCorrect(answer: string, exercise: ExerciseDTO): boolean {
+    const expected = this.parseJson<CorrectAnswerData>(exercise.correctAnswer, {});
+
+    if (expected.answers) {
+      const submitted = answer.split(/[,\s]+/).map(item => this.normalizeAnswer(item)).filter(Boolean);
+      return expected.answers.map(item => this.normalizeAnswer(item)).join('|') === submitted.join('|');
+    }
+
+    return this.answerVariants(expected.answer ?? '').includes(this.normalizeAnswer(answer));
+  }
+
+  private answerVariants(answer: string): string[] {
+    const normalized = this.normalizeAnswer(answer);
+    const aliases: Record<string, string[]> = {
+      do: ['do', 'c'],
+      re: ['re', 'd'],
+      mi: ['mi', 'e'],
+      fa: ['fa', 'f'],
+      sol: ['sol', 'g'],
+      la: ['la', 'a'],
+      si: ['si', 'ti', 'b']
+    };
+
+    return aliases[normalized] ?? [normalized];
+  }
+
+  private normalizeAnswer(value: string): string {
+    return value
+      .trim()
+      .toLowerCase()
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '');
+  }
+
+  private parseJson<T>(value: string | undefined, fallback: T): T {
+    if (!value) return fallback;
+    try {
+      return JSON.parse(value) as T;
+    } catch {
+      return fallback;
+    }
   }
 
   private resetExerciseState() {
@@ -150,27 +238,8 @@ export class Lesson implements OnInit {
     this.isCorrect.set(false);
   }
 
-  saveProgress() {
-    const lessonId = this.lesson()?.id;
-    if (!lessonId) return;
-
-    const request = {
-      isCompleted: this.isCompleted(),
-      currentExerciseIndex: this.currentExerciseIndex(),
-      score: this.score()
-    };
-
-    this.progressService.recordProgress(lessonId, request).subscribe({
-      error: (err: any) => console.error('Error guardando progreso:', err)
-    });
-  }
-
-  goBack() {
-    this.router.navigate(['/dashboard']);
-  }
-
-  private handleError(msg: string) {
-    this.error.set(msg);
+  private handleError(message: string) {
+    this.error.set(message);
     this.isLoading.set(false);
   }
 }

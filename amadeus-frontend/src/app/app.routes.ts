@@ -17,7 +17,7 @@ export const routes: Routes = [
         canActivate: [authGuard]
     },
     {
-        path: 'levels/:id',
+        path: 'lessons/:id',
         loadComponent: () => import('./features/lesson/lesson').then(m => m.Lesson),
         canActivate: [authGuard]
     },

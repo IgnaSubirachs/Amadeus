@@ -5,5 +5,6 @@ public record LevelDTO(
         String name,
         String description,
         Integer orderNumber,
+        String difficulty,
         String imageUrl) {
 }

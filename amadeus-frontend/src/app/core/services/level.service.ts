@@ -8,8 +8,8 @@ export interface LevelDTO {
     orderNumber: number;
     name: string;
     description: string;
-    difficulty: string;
-    isLocked: boolean;
+    difficulty?: string;
+    isLocked?: boolean;
     imageUrl?: string;
 }
 

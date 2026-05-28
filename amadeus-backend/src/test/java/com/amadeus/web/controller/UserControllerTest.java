@@ -3,16 +3,18 @@ package com.amadeus.web.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.amadeus.domain.model.User;
 import com.amadeus.domain.service.UserService;
+import com.amadeus.infrastructure.security.JwtAuthenticationFilter;
 import com.amadeus.web.dto.CreateUserRequest;
 import com.amadeus.web.dto.UpdateUserRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
+import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.http.MediaType;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.amadeus.infrastructure.security.JwtService;
@@ -33,7 +35,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * @AutoConfigureMockMvc(addFilters = false) - Deshabilita filtros de seguridad
  *                                  MockMvc - Simula peticiones HTTP sin
  *                                  servidor real
- * @MockBean - Mock del servicio
+ * @MockitoBean - Mock del servicio
  */
 @WebMvcTest(UserController.class)
 @AutoConfigureMockMvc(addFilters = false)
@@ -43,14 +45,19 @@ class UserControllerTest {
         @Autowired
         private MockMvc mockMvc;
 
-        @Autowired
-        private ObjectMapper objectMapper;
+        private final ObjectMapper objectMapper = new ObjectMapper();
 
-        @MockBean
+        @MockitoBean
         private UserService userService;
 
-        @MockBean
+        @MockitoBean
         private JwtService jwtService;
+
+        @MockitoBean
+        private JwtAuthenticationFilter jwtAuthenticationFilter;
+
+        @MockitoBean
+        private UserDetailsService userDetailsService;
 
         private User testUser;
         private CreateUserRequest createRequest;

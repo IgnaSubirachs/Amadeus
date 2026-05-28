@@ -1,5 +1,4 @@
 <div class="dashboard-layout">
-    <!-- Navigation Header -->
     <header class="top-nav glass-panel">
         <div class="nav-brand">
             <span class="logo">♪</span>
@@ -14,38 +13,34 @@
                 <span class="username">{{ username() }}</span>
             </div>
             <button class="btn-logout" (click)="logout()">
-                <i>Salir</i>
+                <i>Sortir</i>
             </button>
         </div>
     </header>
 
-    <!-- Main Content -->
     <main class="dashboard-content">
         <section class="welcome-section">
-            <h1>Hola, {{ username() }} 👋</h1>
-            <p>Continúa tu camino musical. ¡Vamos a aprender!</p>
+            <h1>Hola, {{ username() }}</h1>
+            <p>Tria una llico curta i entrena l'oida, la lectura i el ritme pas a pas.</p>
         </section>
 
-        <!-- Loading State -->
         <div *ngIf="isLoading()" class="loading-state">
             <div class="spinner"></div>
-            <p>Cargando partituras y niveles...</p>
+            <p>Afinant el mapa d'aprenentatge...</p>
         </div>
 
-        <!-- Error State -->
         <div *ngIf="error()" class="error-alert">
             {{ error() }}
             <button (click)="loadLevels()">Reintentar</button>
         </div>
 
-        <!-- Levels Grid -->
         <div class="levels-grid" *ngIf="!isLoading() && !error()">
             <div *ngFor="let level of levels(); let i = index" class="level-card glass-panel"
-                [class.locked]="level.isLocked">
+                [class.locked]="isLocked(level)">
                 <div class="level-header">
-                    <span class="level-number">Nivel {{ level.orderNumber }}</span>
-                    <span class="difficulty-badge" [attr.data-diff]="level.difficulty.toLowerCase()">
-                        {{ level.difficulty }}
+                    <span class="level-number">Nivell {{ level.orderNumber }}</span>
+                    <span class="difficulty-badge" [attr.data-diff]="difficulty(level).toLowerCase()">
+                        {{ difficulty(level) }}
                     </span>
                 </div>
 
@@ -55,20 +50,31 @@
                 </div>
 
                 <div class="level-footer">
-                    <button *ngIf="!level.isLocked" class="btn-primary start-btn" [routerLink]="['/levels', level.id]">
-                        Aprender
-                    </button>
-
-                    <div *ngIf="level.isLocked" class="locked-overlay">
+                    <div *ngIf="isLocked(level)" class="locked-overlay">
                         <span class="lock-icon">🔒</span>
-                        <span>Bloqueado</span>
+                        <span>Bloquejat</span>
+                    </div>
+
+                    <div *ngIf="!isLocked(level)" class="lesson-list">
+                        <a *ngFor="let lesson of getLessons(level.id)" class="lesson-link"
+                            [routerLink]="['/lessons', lesson.id]">
+                            <span class="lesson-order">{{ lesson.orderNumber }}</span>
+                            <span class="lesson-copy">
+                                <strong>{{ lesson.title }}</strong>
+                                <small>{{ lesson.musicTheoryTopic }} · {{ lesson.estimatedMinutes }} min</small>
+                            </span>
+                            <span class="lesson-arrow">→</span>
+                        </a>
+
+                        <p *ngIf="getLessons(level.id).length === 0" class="no-lessons">
+                            Aquest nivell encara no te llicons.
+                        </p>
                     </div>
                 </div>
             </div>
 
-            <!-- Placeholder if no levels exist yet -->
             <div *ngIf="levels().length === 0" class="empty-state">
-                <p>Aún no hay niveles disponibles. ¡Revisa más tarde!</p>
+                <p>Encara no hi ha nivells disponibles.</p>
             </div>
         </div>
     </main>

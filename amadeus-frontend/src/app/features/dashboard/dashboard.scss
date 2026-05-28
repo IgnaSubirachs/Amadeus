@@ -184,8 +184,74 @@
     }
 }
 
-.start-btn {
-    width: 100%;
+.lesson-list {
+    display: grid;
+    gap: 0.75rem;
+}
+
+.lesson-link {
+    display: grid;
+    grid-template-columns: 36px 1fr 18px;
+    align-items: center;
+    gap: 0.85rem;
+    min-height: 64px;
+    padding: 0.75rem;
+    color: var(--text-primary);
+    text-decoration: none;
+    background: rgba(15, 23, 42, 0.48);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 8px;
+    transition: border-color 0.2s, background 0.2s, transform 0.2s;
+
+    &:hover {
+        border-color: rgba(99, 102, 241, 0.45);
+        background: rgba(99, 102, 241, 0.12);
+        transform: translateY(-1px);
+    }
+}
+
+.lesson-order {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    color: #0f172a;
+    background: #fbbf24;
+    font-weight: 800;
+}
+
+.lesson-copy {
+    min-width: 0;
+
+    strong,
+    small {
+        display: block;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    strong {
+        font-size: 0.98rem;
+    }
+
+    small {
+        margin-top: 0.2rem;
+        color: var(--text-secondary);
+    }
+}
+
+.lesson-arrow {
+    color: var(--secondary);
+    font-size: 1.2rem;
+}
+
+.no-lessons {
+    margin: 0;
+    color: var(--text-secondary);
+    font-size: 0.95rem;
 }
 
 .locked-overlay {

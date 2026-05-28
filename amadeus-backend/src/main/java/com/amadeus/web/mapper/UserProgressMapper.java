@@ -14,6 +14,7 @@ public class UserProgressMapper {
         progress.setUserId(request.userId());
         progress.setLessonId(request.lessonId());
         progress.setScore(request.score() != null ? request.score() : 0);
+        progress.setCurrentExerciseIndex(request.currentExerciseIndex() != null ? request.currentExerciseIndex() : 0);
         progress.setIsCompleted(request.isCompleted() != null ? request.isCompleted() : false);
 
         return progress;
@@ -28,6 +29,7 @@ public class UserProgressMapper {
                 progress.getUserId(),
                 progress.getLessonId(),
                 progress.getScore(),
+                progress.getCurrentExerciseIndex(),
                 progress.getIsCompleted(),
                 progress.getCompletedAt());
     }

@@ -19,11 +19,10 @@ export interface ExerciseDTO {
     lessonId: string;
     orderNumber: number;
     type: string;
-    question: string;
-    contentData: string;
+    difficulty: string;
+    questionData: string;
     correctAnswer: string;
-    optionsData?: string;
-    points: number;
+    maxPoints: number;
 }
 
 @Injectable({
@@ -35,7 +34,7 @@ export class LessonService {
     constructor(private http: HttpClient) { }
 
     getLessonsByLevel(levelId: string): Observable<LessonDTO[]> {
-        return this.http.get<LessonDTO[]>(`${environment.apiUrl}/levels/${levelId}/lessons`);
+        return this.http.get<LessonDTO[]>(`${this.apiUrl}/level/${levelId}`);
     }
 
     getLessonById(id: string): Observable<LessonDTO> {
@@ -43,6 +42,6 @@ export class LessonService {
     }
 
     getLessonExercises(lessonId: string): Observable<ExerciseDTO[]> {
-        return this.http.get<ExerciseDTO[]>(`${this.apiUrl}/${lessonId}/exercises`);
+        return this.http.get<ExerciseDTO[]>(`${environment.apiUrl}/exercises/lesson/${lessonId}`);
     }
 }

@@ -7,6 +7,7 @@ public record UserProgressDTO(
         String userId,
         String lessonId,
         Integer score,
+        Integer currentExerciseIndex,
         Boolean isCompleted,
         LocalDateTime completedAt) {
 }

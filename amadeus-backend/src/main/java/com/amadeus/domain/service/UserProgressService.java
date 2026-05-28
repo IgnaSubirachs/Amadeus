@@ -27,6 +27,10 @@ public class UserProgressService {
             if (progress.getScore() > current.getScore()) {
                 current.setScore(progress.getScore());
             }
+            if (progress.getCurrentExerciseIndex() != null
+                    && progress.getCurrentExerciseIndex() > current.getCurrentExerciseIndex()) {
+                current.setCurrentExerciseIndex(progress.getCurrentExerciseIndex());
+            }
             if (progress.getIsCompleted() && !current.getIsCompleted()) {
                 current.setIsCompleted(true);
                 current.setCompletedAt(LocalDateTime.now());

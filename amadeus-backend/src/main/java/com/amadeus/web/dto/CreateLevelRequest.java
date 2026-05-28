@@ -4,5 +4,6 @@ public record CreateLevelRequest(
         String name,
         String description,
         Integer orderNumber,
+        String difficulty,
         String imageUrl) {
 }
